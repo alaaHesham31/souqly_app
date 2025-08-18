@@ -1,14 +1,20 @@
+import 'package:bloc/bloc.dart';
+import 'package:e_commerce_app/core/di/di.dart';
 import 'package:e_commerce_app/core/utils/app_routes.dart';
 import 'package:e_commerce_app/core/utils/app_theme.dart';
-import 'package:e_commerce_app/feature/ui/screens/splash_screen.dart';
+import 'package:e_commerce_app/core/utils/my_bloc_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {
+  Bloc.observer = MyBlocObserver();
+  configureDependencies();
+
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+
   const MyApp({super.key});
 
   @override
