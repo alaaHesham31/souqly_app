@@ -1,9 +1,9 @@
 import 'package:e_commerce_app/core/utils/app_assets.dart';
 import 'package:e_commerce_app/core/utils/app_colors.dart';
-import 'package:e_commerce_app/feature/ui/tabs/categories/categories_view.dart';
-import 'package:e_commerce_app/feature/ui/tabs/favourite/favourite_view.dart';
-import 'package:e_commerce_app/feature/ui/tabs/home/home_view.dart';
-import 'package:e_commerce_app/feature/ui/tabs/profile/profile_view.dart';
+import 'package:e_commerce_app/feature/ui/screens/tabs/categories/categories_view.dart';
+import 'package:e_commerce_app/feature/ui/screens/tabs/favourite/favourite_view.dart';
+import 'package:e_commerce_app/feature/ui/screens/tabs/home/home_tab.dart';
+import 'package:e_commerce_app/feature/ui/screens/tabs/profile/profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -17,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 0;
   List<Widget> tabs = [
-    HomeView(),
+    HomeTab(),
     CategoriesView(),
     FavouriteView(),
     ProfileView()

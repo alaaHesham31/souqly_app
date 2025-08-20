@@ -26,6 +26,8 @@ dependencies:
   get_it: ^8.2.0
   another_flushbar: ^1.12.30
   flutter_bloc: ^9.1.1
+  flutter_image_slideshow: ^0.1.6
+  cached_network_image: ^3.4.1
 
 
 dev_dependencies:

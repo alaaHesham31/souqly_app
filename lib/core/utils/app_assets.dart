@@ -19,6 +19,12 @@ class AppAssets{
   static const String searchIcon = "assets/images/search_icon.png";
   static const String cartIcon = "assets/images/cart_icon.png";
 
+  //announcements
+
+  static const String announcement1 = "assets/images/announcement-1.png";
+  static const String announcement2 = "assets/images/announcement-2.png";
+  static const String announcement3 = "assets/images/announcement-3.png";
+
 
 
 }
