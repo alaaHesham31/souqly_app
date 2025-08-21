@@ -9,7 +9,7 @@ class CustomTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   bool? obscureText;
   Image? suffixIcon;
-  Image? prefixIcon;
+  Widget? prefixIcon;
   double? borderRadius;
   Color? borderColor;
   TextInputType? keyboardType;

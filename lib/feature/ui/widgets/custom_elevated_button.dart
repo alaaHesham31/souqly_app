@@ -8,7 +8,7 @@ class CustomElevatedButton extends StatelessWidget {
   VoidCallback? onPressed;
   Color? color;
   TextStyle? textStyle;
-  Image? prefixImage;
+  Widget? prefixImage;
   Image? suffixImage;
   double? borderRadius;
 
@@ -28,7 +28,7 @@ class CustomElevatedButton extends StatelessWidget {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
             backgroundColor: color ?? AppColors.primaryColor,
-            padding: EdgeInsets.symmetric( vertical: 20.h),
+            padding: EdgeInsets.symmetric( vertical: 16.h, horizontal: 16.w),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(borderRadius ?? 20.0))),
         child: Row(
