@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce_app/core/utils/app_colors.dart';
 import 'package:e_commerce_app/core/utils/app_styles.dart';
+import 'package:e_commerce_app/domain/entities/ProductsResponseEntity.dart';
 import 'package:e_commerce_app/feature/ui/widgets/custom_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
@@ -9,7 +10,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:readmore/readmore.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
-  ProductDetailsScreen({super.key});
+  ProductEntity product;
+  ProductDetailsScreen({required this.product});
 
   List<String> images = [
     "https://media.wired.com/photos/63728604691ed08cc4b98976/3:2/w_2560%2Cc_limit/Nike-Swoosh-News-Gear.jpg",
@@ -52,7 +54,7 @@ class ProductDetailsScreen extends StatelessWidget {
               Stack(
                 children: [
                   SizedBox(
-                      height: 400.h, child: _buildImageSlideShow(images: images)),
+                      height: 400.h, child: _buildImageSlideShow(images: product.images ?? [])),
                   Positioned(
                     top: 8.h,
                     right: 8.w,
@@ -69,13 +71,18 @@ class ProductDetailsScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Nike Air Jordon',
-                    style: AppStyles.medium18Black,
+                  Expanded(
+                    child: AutoSizeText(
+                      product.title ?? "",
+                      style: AppStyles.semiBold20Primary,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
+
                   Text(
-                    'EGP 3,500',
-                    style: AppStyles.medium18Black,
+                    " EGP ${product.price.toString()}",
+                    style: AppStyles.semiBold20Primary,
                   ),
                 ],
               ),
@@ -92,7 +99,7 @@ class ProductDetailsScreen extends StatelessWidget {
                             Border.all(color: AppColors.greyColor, width: 1.w),
                         borderRadius: BorderRadius.circular(20.r)),
                     child: Text(
-                      '3,230 Sold',
+                      '${product.quantity } Sold',
                       style: AppStyles.medium18Black,
                     ),
                   ),
@@ -107,7 +114,7 @@ class ProductDetailsScreen extends StatelessWidget {
                     height: 4.w,
                   ),
                   Text(
-                    '4.8 (7,500) ',
+                    '${product.ratingsAverage} (${product.ratingsQuantity}) ',
                     style: AppStyles.regular14Primary,
                   ),
                   Spacer(),
@@ -150,13 +157,13 @@ class ProductDetailsScreen extends StatelessWidget {
               ),
               Text(
                 'Description',
-                style: AppStyles.medium18Black,
+                style: AppStyles.semiBold20Primary,
               ),
               SizedBox(
                 height: 8.h,
               ),
               ReadMoreText(
-                'Flutter is Google’s mobile UI open source framework to build high-quality native (super fast) interfaces for iOS and Android apps with the unified codebase.',
+                product.description?? "",
                 trimLength: 2,
                 trimMode: TrimMode.Line,
                 colorClickableText: AppColors.greyColor,
@@ -214,6 +221,7 @@ class ProductDetailsScreen extends StatelessWidget {
       indicatorBottomPadding: 8.h,
       indicatorPadding: 8.w,
       autoPlayInterval: 3000,
+      isLoop: false,
       height: 190.h,
       children: images.map((url) {
         return CachedNetworkImage(

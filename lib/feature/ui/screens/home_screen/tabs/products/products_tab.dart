@@ -29,16 +29,16 @@ class ProductsTab extends StatelessWidget {
       body: BlocBuilder<ProductsTabViewModel, ProductsTabStates>(
         bloc: viewModel..getAllProducts(),
         builder: (context, state) {
-          if(state is ProductsLoadingState){
-           return Center(
+          if (state is ProductsLoadingState) {
+            return Center(
               child: CircularProgressIndicator(
                 color: AppColors.primaryColor,
               ),
             );
-          }else if(state is ProductsErrorState){
+          } else if (state is ProductsErrorState) {
             return Text(state.error.errorMessage);
-          }else if(state is ProductsSuccessState){
-            return    Padding(
+          } else if (state is ProductsSuccessState) {
+            return Padding(
               padding: EdgeInsets.all(8.h),
               child: Column(
                 children: [
@@ -50,8 +50,7 @@ class ProductsTab extends StatelessWidget {
                   Expanded(
                     child: GridView.builder(
                         itemCount: viewModel.allProductsList.length,
-                        gridDelegate:
-                        SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
                             childAspectRatio: 2 / 3.2.h,
                             mainAxisSpacing: 16.h,
@@ -59,53 +58,18 @@ class ProductsTab extends StatelessWidget {
                         itemBuilder: (context, index) {
                           return InkWell(
                               onTap: () {
-                                context
-                                    .push(AppRoutes.productDetailsScreen);
+                                context.push(AppRoutes.productDetailsScreen,
+                                    extra: viewModel.allProductsList[index]);
                               },
-                              child: ProductCard(item: viewModel.allProductsList[index],));
+                              child: ProductCard(
+                                item: viewModel.allProductsList[index],
+                              ));
                         }),
                   ),
                 ],
               ),
             );
           }
-          // viewModel.allProducts.isEmpty
-          //     ? Center(
-          //         child: CircularProgressIndicator(
-          //           color: AppColors.primaryColor,
-          //         ),
-          //       )
-          //     :
-          // Padding(
-          //         padding: EdgeInsets.all(8.h),
-          //         child: Column(
-          //           children: [
-          //             SearchBarWidget(
-          //                 controller: viewModel.controller, onCartTab: () {}),
-          //             SizedBox(
-          //               height: 24.h,
-          //             ),
-          //             Expanded(
-          //               child: GridView.builder(
-          //                   itemCount: viewModel.allProducts.length,
-          //                   gridDelegate:
-          //                       SliverGridDelegateWithFixedCrossAxisCount(
-          //                           crossAxisCount: 2,
-          //                           childAspectRatio: 2 / 2.9.h,
-          //                           mainAxisSpacing: 16.h,
-          //                           crossAxisSpacing: 16.w),
-          //                   itemBuilder: (context, index) {
-          //                     return InkWell(
-          //                         onTap: () {
-          //                           context
-          //                               .push(AppRoutes.productDetailsScreen);
-          //                         },
-          //                         child: ProductCard(item: viewModel.allProducts[index],));
-          //                   }),
-          //             ),
-          //           ],
-          //         ),
-          //       );
           return SizedBox.shrink();
         },
       ),

@@ -1,3 +1,4 @@
+import 'package:e_commerce_app/domain/entities/ProductsResponseEntity.dart';
 import 'package:e_commerce_app/feature/ui/auth/login/login_screen.dart';
 import 'package:e_commerce_app/feature/ui/auth/register/register_screen.dart';
 import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/product_details_screen.dart';
@@ -35,7 +36,9 @@ class AppRoutes {
       ),
       GoRoute(
         path: productDetailsScreen,
-        builder: (context, state) => ProductDetailsScreen(),
+        builder: (context, state) {
+          final product = state.extra as ProductEntity;
+        return  ProductDetailsScreen(product: product);},
       ),
     ],
   );
