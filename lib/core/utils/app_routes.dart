@@ -1,7 +1,7 @@
 import 'package:e_commerce_app/feature/ui/auth/login/login_screen.dart';
 import 'package:e_commerce_app/feature/ui/auth/register/register_screen.dart';
 import 'package:e_commerce_app/feature/ui/screens/splash_screen.dart';
-import 'package:e_commerce_app/feature/ui/screens/home_screen.dart';
+import 'package:e_commerce_app/feature/ui/screens/home_screen/home_screen.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRoutes {
@@ -12,7 +12,7 @@ class AppRoutes {
 
 
   static GoRouter router = GoRouter(
-    initialLocation: splashScreen,
+    initialLocation: homeScreen ,
     routes: [
       GoRoute(
         path: splashScreen,

@@ -1,11 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce_app/core/utils/app_colors.dart';
 import 'package:e_commerce_app/core/utils/app_styles.dart';
+import 'package:e_commerce_app/domain/entities/CategoryOrBrandEntity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CategoryBrandItem extends StatelessWidget {
-  const CategoryBrandItem({super.key});
+  CategoryOrBrandDataEntity itemEntity;
+   CategoryBrandItem({required this.itemEntity});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,7 @@ class CategoryBrandItem extends StatelessWidget {
             width: double.infinity,
             height: 10.h,
             fit: BoxFit.cover,
-            imageUrl: "https://cdn-icons-png.flaticon.com/512/6858/6858504.png",
+            imageUrl: itemEntity.image ?? '',
             placeholder: (context, url) => CircularProgressIndicator( color: AppColors.primaryColor,),
             errorWidget: (context, url, error) => Icon(
               Icons.error,
@@ -34,7 +36,7 @@ class CategoryBrandItem extends StatelessWidget {
         SizedBox(height: 8.h,),
         Expanded(
           child: Text(
-            'Women’s fashion',
+           itemEntity.name ?? '',
             style: AppStyles.regular12Primary,
             softWrap: true,
             textWidthBasis: TextWidthBasis.longestLine,
