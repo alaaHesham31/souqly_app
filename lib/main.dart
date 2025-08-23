@@ -6,7 +6,11 @@ import 'package:e_commerce_app/core/utils/my_bloc_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-void main() {
+import 'core/shared_prefrences/shared_preferences_utils.dart';
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferencesUtils.sharedInit();
   Bloc.observer = MyBlocObserver();
   configureDependencies();
 

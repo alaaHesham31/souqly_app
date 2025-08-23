@@ -30,6 +30,7 @@ dependencies:
   cached_network_image: ^3.4.1
   readmore: ^3.0.0
   auto_size_text: ^3.0.0
+  shared_preferences: ^2.5.3
 
 
 dev_dependencies:

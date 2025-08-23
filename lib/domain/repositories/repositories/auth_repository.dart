@@ -9,4 +9,5 @@ abstract class AuthRepository {
 
 
  Future<Either<Failures, LoginResponseEntity>> login(String email, String password);
+
 }

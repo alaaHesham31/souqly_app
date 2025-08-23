@@ -1,3 +1,4 @@
+import 'package:e_commerce_app/core/shared_prefrences/shared_preferences_utils.dart';
 import 'package:e_commerce_app/core/utils/app_assets.dart';
 import 'package:e_commerce_app/core/utils/app_colors.dart';
 import 'package:e_commerce_app/core/utils/app_routes.dart';
@@ -13,17 +14,25 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
-
   @override
   void initState() {
-  Future.delayed(const Duration(seconds: 3), (){
-    if(mounted){
-      context.go(AppRoutes.loginScreen);
-    }
-  });
+    super.initState();
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        _checkLogin();
+      }
+    });
   }
 
+  Future<void> _checkLogin() async {
+    final token = SharedPreferencesUtils.getString('token') ;
+
+    if (token != null && token.isNotEmpty) {
+      context.go(AppRoutes.homeScreen);
+    } else {
+      context.go(AppRoutes.loginScreen);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
