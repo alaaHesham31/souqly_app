@@ -8,7 +8,7 @@ class CustomTextField extends StatelessWidget {
   String hintText;
   final String? Function(String?)? validator;
   bool? obscureText;
-  Image? suffixIcon;
+  Widget? suffixIcon;
   Widget? prefixIcon;
   double? borderRadius;
   Color? borderColor;

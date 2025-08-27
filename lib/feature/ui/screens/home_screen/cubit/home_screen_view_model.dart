@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:e_commerce_app/feature/ui/screens/home_screen/cubit/home_screen_states.dart';
-import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/favourite/favourite_view.dart';
+import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/favourite/favourite_tab.dart';
 import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/home/home_tab.dart';
 import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/products_tab.dart';
-import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/profile/profile_view.dart';
+import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/profile/profile_tab.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreenViewModel extends Cubit<HomeScreenStates>{
@@ -12,8 +12,8 @@ class HomeScreenViewModel extends Cubit<HomeScreenStates>{
   List<Widget> tabs = [
     HomeTab(),
     ProductsTab(),
-    FavouriteView(),
-    ProfileView()
+    FavouriteTab(),
+    ProfileTab()
   ];
 
 

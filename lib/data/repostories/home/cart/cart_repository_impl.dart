@@ -6,12 +6,23 @@ import 'package:e_commerce_app/domain/repositories/repositories/home/cart/cart_r
 import 'package:injectable/injectable.dart';
 
 @Injectable(as: CartRepository)
-class CartRepositoryImpl extends CartRepository{
+class CartRepositoryImpl extends CartRepository {
   CartRemoteDataSource cartRemoteDataSource;
+
   CartRepositoryImpl({required this.cartRemoteDataSource});
+
   @override
-  Future<Either<Failures, GetCartResponseEntity>> getCartItems() async{
+  Future<Either<Failures, GetCartResponseEntity>> getCartItems() async {
     var either = await cartRemoteDataSource.getCartItems();
-     return either.fold((error) => Left(error), (response) => Right(response));
+    return either.fold((error) => Left(error), (response) => Right(response));
   }
+
+  @override
+  Future<Either<Failures, GetCartResponseEntity>> deleteCartItems(
+      String productId) async {
+    var either = await cartRemoteDataSource.deleteCartItems(productId);
+    return either.fold((error) => Left(error), (response) => Right(response));
+  }
+
+
 }

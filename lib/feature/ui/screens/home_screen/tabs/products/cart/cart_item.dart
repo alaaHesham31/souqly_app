@@ -1,19 +1,31 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:e_commerce_app/core/di/di.dart';
 import 'package:e_commerce_app/core/utils/app_colors.dart';
 import 'package:e_commerce_app/core/utils/app_styles.dart';
 import 'package:e_commerce_app/domain/entities/GetCartResponseEntity.dart';
+import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/cart/cubit/get_cart_items_view_model.dart';
+import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/cubit/products_tab_states.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CartItem extends StatelessWidget {
   bool isInFavTab;
-
-  CartItem({super.key, required this.item, this.isInFavTab = false});
-
+  final VoidCallback onDelete;
   final GetProductsInCartEntity item;
+
+  CartItem(
+      {super.key,
+      required this.item,
+      required this.onDelete,
+      this.isInFavTab = false});
+
+  GetCartItemsViewModel viewModel = getIt<GetCartItemsViewModel>();
 
   @override
   Widget build(BuildContext context) {
+    final initialCount = item.count?.toInt() ?? 0;
+
     return Container(
       height: 120.h,
       width: double.infinity,
@@ -59,16 +71,17 @@ class CartItem extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.all(4.sp),
               child: Column(
-                // crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        child: Text(item.product?.title ?? '',
-                            style: AppStyles.medium16Primary,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,),
+                        child: Text(
+                          item.product?.title ?? '',
+                          style: AppStyles.medium16Primary,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                       isInFavTab
                           ? IconButton(
@@ -78,7 +91,7 @@ class CartItem extends StatelessWidget {
                                 color: AppColors.primaryColor,
                               ))
                           : IconButton(
-                              onPressed: () {},
+                              onPressed: onDelete,
                               icon: Icon(
                                 Icons.delete_rounded,
                                 color: AppColors.primaryColor,
@@ -119,17 +132,63 @@ class CartItem extends StatelessWidget {
                                       color: AppColors.whiteColor,
                                       size: 24.sp,
                                     ),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      // compute new count (prevent negative)
+                                      final newCount =
+                                          (item.count!.toInt()) - 1;
+                                      if (newCount >= 1) {
+                                        context
+                                            .read<GetCartItemsViewModel>()
+                                            .updateCount(newCount,
+                                                item.product?.id ?? '');
+                                      }
+                                    },
                                   ),
-                                  Text(item.count.toString(),
-                                      style: AppStyles.medium18White),
+                                  BlocBuilder<GetCartItemsViewModel,
+                                      ProductsTabStates>(
+                                    builder: (context, state) {
+                                      int displayCount = initialCount;
+
+                                      if (state is GetCartSuccessState) {
+                                        final products = state
+                                            .getCartResponseEntity
+                                            .data
+                                            ?.products;
+
+                                        if (products != null &&
+                                            products.isNotEmpty) {
+                                          final updated = products.firstWhere(
+                                            (p) =>
+                                                p.product?.id ==
+                                                item.product?.id,
+                                            orElse: () => item,
+                                          );
+                                          displayCount =
+                                              updated.count?.toInt() ??
+                                                  displayCount;
+                                        }
+                                      }
+
+                                      return Text(
+                                        displayCount.toString(),
+                                        style: AppStyles.medium18White,
+                                      );
+                                    },
+                                  ),
                                   IconButton(
                                     icon: Icon(
                                       Icons.add_circle_outline,
                                       color: AppColors.whiteColor,
                                       size: 24.sp,
                                     ),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      final newCount =
+                                          (item.count?.toInt() ?? 0) + 1;
+                                      context
+                                          .read<GetCartItemsViewModel>()
+                                          .updateCount(
+                                              newCount, item.product?.id ?? '');
+                                    },
                                   ),
                                 ],
                               ),

@@ -31,4 +31,30 @@ class ApiManager {
         data: body);
     return response;
   }
+
+  Future<Response<dynamic>> deleteData(
+      {required String endPoint,
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+        Map<String, dynamic>? headers,
+        Object? body}) async {
+    var response = await dio.delete(ApiConstants.baseUrl + endPoint,
+        queryParameters: queryParameters,
+        options: Options(headers: headers, validateStatus: (status) => true),
+        data: body);
+    return response;
+  }
+
+  Future<Response<dynamic>> updateData(
+      {required String endPoint,
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+        Map<String, dynamic>? headers,
+        Object? body}) async {
+    var response = await dio.put(ApiConstants.baseUrl + endPoint,
+        queryParameters: queryParameters,
+        options: Options(headers: headers, validateStatus: (status) => true),
+        data: body);
+    return response;
+  }
 }

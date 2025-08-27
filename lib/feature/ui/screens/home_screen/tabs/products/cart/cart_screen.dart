@@ -1,4 +1,5 @@
 import 'package:e_commerce_app/core/di/di.dart';
+import 'package:e_commerce_app/core/utils/app_assets.dart';
 import 'package:e_commerce_app/core/utils/app_colors.dart';
 import 'package:e_commerce_app/core/utils/app_styles.dart';
 import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/cart/cart_item.dart';
@@ -8,101 +9,153 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CartDetailsScreen extends StatelessWidget {
-  CartDetailsScreen({super.key});
+class CartDetailsScreen extends StatefulWidget {
+  const CartDetailsScreen({super.key});
 
-  GetCartItemsViewModel viewModel = getIt<GetCartItemsViewModel>();
+  @override
+  State<CartDetailsScreen> createState() => _CartDetailsScreenState();
+}
+
+class _CartDetailsScreenState extends State<CartDetailsScreen> {
+  late final GetCartItemsViewModel viewModel = getIt<GetCartItemsViewModel>();
+
+  @override
+  void initState() {
+    super.initState();
+    viewModel.getCartItems();
+  }
+
+  @override
+  void dispose() {
+    viewModel.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocProvider.value(
+      value: viewModel,
+      child: Scaffold(
         appBar: AppBar(
-          title: Text(
-            "Cart",
-            style: AppStyles.semiBold20Primary,
-          ),
+          title: Text("Cart", style: AppStyles.semiBold20Primary),
           centerTitle: true,
         ),
-        body: BlocBuilder(
-            bloc: viewModel..getCartItem(),
-            builder: (context, state) {
-              if (state is GetCartSuccessState) {
-                print(viewModel.cartItems.length);
-                return Column(
-                  children: [
-                    Expanded(
-                      child: ListView.builder(
-                        padding: EdgeInsets.all(12.w),
+        body: BlocConsumer<GetCartItemsViewModel, ProductsTabStates>(
+          listenWhen: (prev, curr) =>
+              curr is DeleteCartSuccessState ||
+              curr is DeleteCartErrorState ||
+              curr is UpdateCountSuccessState,
+          listener: (context, state) {
+            if (state is DeleteCartErrorState) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.error.errorMessage),
+                  backgroundColor: AppColors.redColor,
+                ),
+              );
+            } else if (state is DeleteCartSuccessState) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.getCartResponseEntity.message ??
+                      'Deleted successfully'),
+                  backgroundColor: AppColors.greenColor,
+                ),
+              );
+            }
+          },
+          buildWhen: (prev, curr) =>
+              curr is GetCartLoadingState ||
+              curr is GetCartSuccessState ||
+              curr is GetCartErrorState ||
+              curr is UpdateCountSuccessState,
+          builder: (context, state) {
+            if (state is GetCartLoadingState) {
+              return Center(
+                child: CircularProgressIndicator(color: AppColors.primaryColor),
+              );
+            }
 
-                        itemCount: viewModel.cartItems.length,
-                        itemBuilder: (context, index) {
-                          final item = viewModel.cartItems[index];
+            if (state is GetCartErrorState) {
+              return Center(child: Text(state.error.errorMessage));
+            }
 
-                          return CartItem(
-                            item: item,
-                          );
-                        },
-                      ),
-                    ),
-                    buildCheckoutSec()
-                  ],
-                );
-              } else if (state is GetCartErrorState) {
-                return Text(state.error.errorMessage);
-              } else if (state is GetCartLoadingState) {
+            if (state is GetCartSuccessState) {
+              final items = state.getCartResponseEntity.data?.products ?? [];
+              final total =
+                  state.getCartResponseEntity.data?.totalCartPrice ?? 0;
+              // final count = state.getCartResponseEntity.data?.products[index].count ?? 0
+              if (items.isEmpty) {
                 return Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.primaryColor,
+                  child: Image(
+                    image: AssetImage(AppAssets.emptyCart),
+                    height: 200.h,
                   ),
                 );
               }
-              return SizedBox();
-            }));
+
+              return Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      padding: EdgeInsets.all(12.w),
+                      itemCount: items.length,
+                      itemBuilder: (context, index) {
+                        final item = items[index];
+                        return CartItem(
+                          item: item,
+                          onDelete: () {
+                            context
+                                .read<GetCartItemsViewModel>()
+                                .deleteCartItem(item.product?.id ?? '');
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  _buildCheckoutSec(total),
+                ],
+              );
+            }
+
+            return const SizedBox(); // fallback
+          },
+        ),
+      ),
+    );
   }
 
-  Widget buildCheckoutSec() {
+  Widget _buildCheckoutSec(num total) {
     return Container(
       padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.white,
         boxShadow: [
-          BoxShadow(
-              color: Colors.black12, blurRadius: 6, offset: Offset(0, -2)),
+          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, -2))
         ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Total Price
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text("Total price", style: AppStyles.medium16Grey),
-              Text("EGP 3,500", style: AppStyles.bold18Black),
+              Text("EGP $total", style: AppStyles.bold18Black),
             ],
           ),
-
-          // Checkout Button
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryColor,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.r),
-              ),
+                  borderRadius: BorderRadius.circular(12.r)),
               padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
             ),
             onPressed: () {},
             child: Row(
               children: [
-                Text(
-                  "Check Out",
-                  style: AppStyles.medium18White,
-                ),
+                Text("Check Out", style: AppStyles.medium18White),
                 SizedBox(width: 16.w),
-                Icon(
-                  Icons.arrow_forward,
-                  color: AppColors.whiteColor,
-                ),
+                const Icon(Icons.arrow_forward, color: AppColors.whiteColor),
               ],
             ),
           ),

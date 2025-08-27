@@ -2,6 +2,7 @@ import 'package:e_commerce_app/core/shared_prefrences/shared_preferences_utils.d
 import 'package:e_commerce_app/domain/entities/ProductsResponseEntity.dart';
 import 'package:e_commerce_app/feature/ui/auth/login/login_screen.dart';
 import 'package:e_commerce_app/feature/ui/auth/register/register_screen.dart';
+import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/cart/cart_screen.dart';
 import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/product_details_screen.dart';
 import 'package:e_commerce_app/feature/ui/screens/splash_screen/splash_screen.dart';
 import 'package:e_commerce_app/feature/ui/screens/home_screen/home_screen.dart';
@@ -13,6 +14,8 @@ class AppRoutes {
   static const String signUpScreen = "/signUp";
   static const String homeScreen = "/home";
   static const String productDetailsScreen = "/detailsScreen";
+  static const String cartDetailsScreen = "/cartDetailsScreen";
+
 
   static GoRouter router = GoRouter(
       initialLocation: splashScreen,
@@ -39,6 +42,10 @@ class AppRoutes {
             final product = state.extra as ProductEntity;
             return ProductDetailsScreen(product: product);
           },
+        ),
+        GoRoute(
+          path: cartDetailsScreen,
+          builder: (context, state) => CartDetailsScreen(),
         ),
       ],
     redirect: (context, state) {

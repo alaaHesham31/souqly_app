@@ -26,7 +26,7 @@ class AppAssets{
   static const String announcement3 = "assets/images/announcement-3.png";
 
 
-  // test
-  static const String shoeImage = "assets/images/shoe_img.png";
+  // empty cart
+  static const String emptyCart = "assets/images/empty_cart.png";
 
 }

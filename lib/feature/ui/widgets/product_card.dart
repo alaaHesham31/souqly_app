@@ -2,13 +2,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce_app/core/utils/app_colors.dart';
 import 'package:e_commerce_app/core/utils/app_styles.dart';
 import 'package:e_commerce_app/domain/entities/ProductsResponseEntity.dart';
+import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/cubit/products_tab_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 
 class ProductCard extends StatelessWidget {
-  ProductEntity item;
+  ProductEntity product;
 
-  ProductCard({required this.item});
+  ProductCard({required this.product});
+
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +35,7 @@ class ProductCard extends StatelessWidget {
                     width: double.infinity,
                     // height: 191.h,
                     fit: BoxFit.cover,
-                    imageUrl: item.imageCover ?? "",
+                    imageUrl: product.imageCover ?? "",
                     placeholder: (context, url) => CircularProgressIndicator(
                       color: AppColors.primaryColor,
                     ),
@@ -41,7 +45,7 @@ class ProductCard extends StatelessWidget {
                     ),
                     imageBuilder: (context, ImageProvider) {
                       return Image.network(
-                        item.imageCover ?? "",
+                        product.imageCover ?? "",
                       );
                     },
                   ),
@@ -66,11 +70,13 @@ class ProductCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  item.title ?? "",
-                  style: AppStyles.regular14Primary,
+                  product.title ?? "",
+                  style: AppStyles.medium16Primary,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  item.description ?? "",
+                  product.description ?? "",
                   maxLines: 2,
                   style: AppStyles.regular14Primary,
                 ),
@@ -80,14 +86,14 @@ class ProductCard extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      '${item.price.toString()} EGP ',
+                      '${product.price.toString()} EGP ',
                       style: AppStyles.regular14Primary,
                     ),
                     SizedBox(
                       height: 16.w,
                     ),
                     Text(
-                      '${item.price.toString() * 2} EGP ',
+                      '${product.price.toString() * 2} EGP ',
                       style: AppStyles.regular14PrimaryStrikethrough,
                     ),
                   ],
@@ -98,7 +104,7 @@ class ProductCard extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      'Review (${item.ratingsAverage}) ',
+                      'Review (${product.ratingsAverage}) ',
                       style: AppStyles.regular14Primary,
                     ),
                     SizedBox(
@@ -109,9 +115,19 @@ class ProductCard extends StatelessWidget {
                       color: AppColors.yellowColor,
                     ),
                     Spacer(),
-                    Icon(
-                      Icons.add_circle,
-                      color: AppColors.primaryColor,
+                    IconButton(
+                      onPressed: () {
+                        // ✅ Use the provided cubit from context
+                        context
+                            .read<ProductsTabViewModel>()
+                            .addProductsToCart(productId: product.id ?? '');
+                        // viewModel.addProductsToCart(
+                        //     productId: product.id ?? '');
+                      },
+                      icon: Icon(
+                        Icons.add_circle,
+                        color: AppColors.primaryColor,
+                      ),
                     ),
                   ],
                 ),

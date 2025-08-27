@@ -1,29 +1,32 @@
 import 'package:e_commerce_app/domain/entities/ProductsResponseEntity.dart';
 
 class GetCartResponseEntity {
-  GetCartResponseEntity({
-      this.status, 
-      this.numOfCartItems, 
-      this.cartId, 
-      this.data,});
+  GetCartResponseEntity(
+      {this.status,
+      this.numOfCartItems,
+      this.cartId,
+      this.data,
+      this.message,
+      this.statusMsg});
 
   String? status;
   num? numOfCartItems;
   String? cartId;
   GetCartDataEntity? data;
-
-
+  String? statusMsg;
+  String? message;
 }
 
 class GetCartDataEntity {
   GetCartDataEntity({
-      this.id, 
-      this.cartOwner, 
-      this.products, 
-      this.createdAt, 
-      this.updatedAt, 
-      this.v, 
-      this.totalCartPrice,});
+    this.id,
+    this.cartOwner,
+    this.products,
+    this.createdAt,
+    this.updatedAt,
+    this.v,
+    this.totalCartPrice,
+  });
 
   String? id;
   String? cartOwner;
@@ -32,24 +35,18 @@ class GetCartDataEntity {
   String? updatedAt;
   num? v;
   num? totalCartPrice;
-
-
 }
 
 class GetProductsInCartEntity {
   GetProductsInCartEntity({
-      this.count, 
-      this.id, 
-      this.product, 
-      this.price,});
+    this.count,
+    this.id,
+    this.product,
+    this.price,
+  });
 
   num? count;
   String? id;
   ProductEntity? product;
   num? price;
-
-
 }
-
-
-

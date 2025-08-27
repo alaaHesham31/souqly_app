@@ -2,7 +2,9 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dartz/dartz.dart';
 import 'package:e_commerce_app/core/api/api_manager.dart';
 import 'package:e_commerce_app/core/api/end_points.dart';
+import 'package:e_commerce_app/core/shared_prefrences/shared_preferences_utils.dart';
 import 'package:e_commerce_app/core/utils/failures.dart';
+import 'package:e_commerce_app/data/model/AddToCartResponseDm.dart';
 import 'package:e_commerce_app/data/model/CategoryOrBrandDm.dart';
 import 'package:e_commerce_app/data/model/ProductsResponseDm.dart';
 import 'package:e_commerce_app/domain/repositories/data_sources/remote_data_sources/home_remote_data_source.dart';
@@ -80,6 +82,40 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
           return Right(allProducts);
         }else {
           return Left(ServerError(errorMessage: allProducts.statusMsg!));
+        }
+      }else{
+        return Left(
+          NetworkError(errorMessage: 'Check your Internet Connection'),
+        );
+      }
+    } catch (e) {
+      return Left(Failures(errorMessage: e.toString()));
+
+    }
+  }
+
+  @override
+  Future<Either<Failures, AddToCartResponseDm>> addProductToCart(String productId) async{
+    List<ConnectivityResult> connectivityResults =
+        await Connectivity().checkConnectivity();
+    var token = SharedPreferencesUtils.getString('token');
+
+    try {
+      if (connectivityResults.contains(ConnectivityResult.wifi) ||
+          connectivityResults.contains(ConnectivityResult.mobile)) {
+        var response = await apiManager.postData(endPoint: EndPoints.addProductToCart,
+        body: {
+          "productId": productId
+        },
+        headers: {
+          'token' : token
+        });
+        var  cartProducts = AddToCartResponseDm.fromJson(response.data);
+        if(response.statusCode == 200){
+
+          return Right(cartProducts);
+        }else {
+          return Left(ServerError(errorMessage: cartProducts.statusMsg!));
         }
       }else{
         return Left(

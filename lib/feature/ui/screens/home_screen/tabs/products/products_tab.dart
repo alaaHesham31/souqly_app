@@ -11,33 +11,84 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-class ProductsTab extends StatelessWidget {
+class ProductsTab extends StatefulWidget {
   ProductsTab({super.key});
 
-  ProductsTabViewModel viewModel = getIt<ProductsTabViewModel>();
+  @override
+  State<ProductsTab> createState() => _ProductsTabState();
+}
+
+class _ProductsTabState extends State<ProductsTab>
+    with AutomaticKeepAliveClientMixin {
+  late final ProductsTabViewModel viewModel = getIt<ProductsTabViewModel>();
+
+  @override
+  void initState() {
+    super.initState();
+    viewModel.getAllProducts();
+  }
+
+  @override
+  void dispose() {
+    viewModel.close();
+    super.dispose();
+  }
+
+  @override
+  bool get wantKeepAlive => true; //  keeps tab alive
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Image(
-          image: AssetImage(AppAssets.appLogo),
-          color: AppColors.primaryColor,
-          width: 200.w,
+    super.build(context); //  important for keepAlive
+
+    return BlocProvider.value(
+      value: viewModel,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Image(
+            image: AssetImage(AppAssets.appLogo),
+            color: AppColors.primaryColor,
+            width: 200.w,
+          ),
         ),
-      ),
-      body: BlocBuilder<ProductsTabViewModel, ProductsTabStates>(
-        bloc: viewModel..getAllProducts(),
-        builder: (context, state) {
-          if (state is ProductsLoadingState) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: AppColors.primaryColor,
-              ),
-            );
-          } else if (state is ProductsErrorState) {
-            return Text(state.error.errorMessage);
-          } else if (state is ProductsSuccessState) {
+        body: BlocConsumer<ProductsTabViewModel, ProductsTabStates>(
+          //  Only listen for add-to-cart result states
+          listenWhen: (prev, curr) =>
+              curr is AddToCartSuccessState || curr is AddToCartErrorState,
+          listener: (context, state) {
+            if (state is AddToCartErrorState) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.error.errorMessage),
+                  backgroundColor: AppColors.redColor,
+                ),
+              );
+            } else if (state is AddToCartSuccessState) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                      state.addToCartResponseEntity.message ?? 'Added to cart'),
+                  backgroundColor: AppColors.greenColor,
+                ),
+              );
+            }
+          },
+          // Do not rebuild UI for add-to-cart states (prevents Scaffold replacement)
+          buildWhen: (prev, curr) =>
+              curr is ProductsLoadingState ||
+              curr is ProductsSuccessState ||
+              curr is ProductsErrorState,
+
+          builder: (context, state) {
+            if (state is ProductsLoadingState &&
+                viewModel.allProductsList.isEmpty) {
+              return Center(
+                child: CircularProgressIndicator(color: AppColors.primaryColor),
+              );
+            }
+            if (state is ProductsErrorState) {
+              return Center(child: Text(state.error.errorMessage));
+            }
             return Padding(
               padding: EdgeInsets.all(8.h),
               child: Column(
@@ -62,16 +113,15 @@ class ProductsTab extends StatelessWidget {
                                     extra: viewModel.allProductsList[index]);
                               },
                               child: ProductCard(
-                                item: viewModel.allProductsList[index],
+                                product: viewModel.allProductsList[index],
                               ));
                         }),
                   ),
                 ],
               ),
             );
-          }
-          return SizedBox.shrink();
-        },
+          },
+        ),
       ),
     );
   }
