@@ -2,17 +2,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce_app/core/utils/app_colors.dart';
 import 'package:e_commerce_app/core/utils/app_styles.dart';
 import 'package:e_commerce_app/domain/entities/ProductsResponseEntity.dart';
+import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/cart/cubit/get_cart_items_view_model.dart';
+import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/cubit/products_tab_states.dart';
 import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/cubit/products_tab_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class ProductCard extends StatelessWidget {
   ProductEntity product;
+  bool isFavPressed = false;
 
   ProductCard({required this.product});
-
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +54,27 @@ class ProductCard extends StatelessWidget {
                 Positioned(
                   top: 8.h,
                   right: 8.w,
-                  child: Icon(
-                    Icons.favorite_border_rounded,
-                    color: AppColors.primaryColor,
+                  child: IconButton(
+                    onPressed: () {
+                      GetCartItemsViewModel.get(context)
+                          .addToWishList(product.id ?? '');
+                    },
+                    icon: BlocBuilder<GetCartItemsViewModel, ProductsTabStates>(
+                      builder: (context, state) {
+                        final viewModel = GetCartItemsViewModel.get(context);
+
+                        // check if current product is in wishlist
+                        final isInWishList = viewModel.wishListIds.contains(product.id);
+
+                        return Icon(
+                          isInWishList
+                              ? Icons.favorite_rounded
+                              : Icons.favorite_border_rounded,
+                          color: AppColors.primaryColor,
+                        );
+
+                      },
+                    ),
                   ),
                 ),
               ],
@@ -117,7 +136,7 @@ class ProductCard extends StatelessWidget {
                     Spacer(),
                     IconButton(
                       onPressed: () {
-                        // ✅ Use the provided cubit from context
+                        //  Use the provided cubit from context
                         context
                             .read<ProductsTabViewModel>()
                             .addProductsToCart(productId: product.id ?? '');

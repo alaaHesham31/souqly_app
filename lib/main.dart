@@ -4,6 +4,7 @@ import 'package:e_commerce_app/core/utils/app_routes.dart';
 import 'package:e_commerce_app/core/utils/app_theme.dart';
 import 'package:e_commerce_app/core/utils/my_bloc_observer.dart';
 import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/cubit/products_tab_view_model.dart';
+import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/wish_list/cucit/wish_list_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,6 +21,7 @@ void main() async{
     providers: [
       BlocProvider(create: (context) => getIt<ProductsTabViewModel>()),
       BlocProvider(create: (context) => getIt<GetCartItemsViewModel>()),
+      BlocProvider(create: (context) => getIt<WishListViewModel>()),
 
     ],
       child: const MyApp()));

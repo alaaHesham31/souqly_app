@@ -26,7 +26,9 @@ class AppAssets{
   static const String announcement3 = "assets/images/announcement-3.png";
 
 
-  // empty cart
+  // empty items
   static const String emptyCart = "assets/images/empty_cart.png";
+  static const String emptyWishList = "assets/images/empty_wishlist.png";
+
 
 }

@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:e_commerce_app/domain/use_cases/add_to_wish_list_use_case.dart';
 import 'package:e_commerce_app/domain/use_cases/delete_products_in_cart_use_case.dart';
 import 'package:e_commerce_app/domain/use_cases/get_products_in_cart_use_case.dart';
 import 'package:e_commerce_app/domain/use_cases/update_count_use_case.dart';
@@ -10,12 +11,15 @@ import 'package:injectable/injectable.dart';
 class GetCartItemsViewModel extends Cubit<ProductsTabStates> {
   final GetCartItemUseCase getCartItemUseCase;
   final DeleteCartItemUseCase deleteCartItemUseCase;
-  UpdateCountUseCase updateCountUseCase;
+  final UpdateCountUseCase updateCountUseCase;
+  final AddToWishListUseCase addToWishListUseCase;
+ List<String> wishListIds = [];
 
   GetCartItemsViewModel({
     required this.getCartItemUseCase,
     required this.deleteCartItemUseCase,
     required this.updateCountUseCase,
+    required this.addToWishListUseCase,
   }) : super(GetCartLoadingState());
 
   static GetCartItemsViewModel get(context) => BlocProvider.of(context);
@@ -26,7 +30,6 @@ class GetCartItemsViewModel extends Cubit<ProductsTabStates> {
     either.fold(
       (error) => emit(GetCartErrorState(error: error)),
       (response) {
-
         emit(GetCartSuccessState(getCartResponseEntity: response));
       },
     );
@@ -59,5 +62,17 @@ class GetCartItemsViewModel extends Cubit<ProductsTabStates> {
         );
       },
     );
+  }
+
+  addToWishList(String productId) async {
+    var either = await addToWishListUseCase.invoke(productId);
+    return either.fold((error) {
+      emit(AddToWishListErrorState(error: error));
+    }, (response) {
+    wishListIds.add(productId);
+    // print(productId);
+    //   print("====================== product added successfully with id: $productId");
+      emit(AddToWishListSuccessState(addToWishListResponseEntity: response));
+    });
   }
 }

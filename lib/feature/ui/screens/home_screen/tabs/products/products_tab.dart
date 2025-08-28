@@ -4,6 +4,7 @@ import 'package:e_commerce_app/core/utils/app_colors.dart';
 import 'package:e_commerce_app/core/utils/app_routes.dart';
 import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/cubit/products_tab_states.dart';
 import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/cubit/products_tab_view_model.dart';
+import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/wish_list/cucit/wish_list_view_model.dart';
 import 'package:e_commerce_app/feature/ui/widgets/product_card.dart';
 import 'package:e_commerce_app/feature/ui/widgets/search_bar_widget.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class _ProductsTabState extends State<ProductsTab>
   void initState() {
     super.initState();
     viewModel.getAllProducts();
+    context.read<WishListViewModel>().fetchWishlist();
   }
 
   @override

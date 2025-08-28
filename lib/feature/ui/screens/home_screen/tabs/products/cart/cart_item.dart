@@ -85,8 +85,10 @@ class CartItem extends StatelessWidget {
                       ),
                       isInFavTab
                           ? IconButton(
-                              onPressed: () {},
-                              icon: Icon(
+                              onPressed: () {
+                              },
+                              icon:
+                              Icon(
                                 Icons.favorite_border_rounded,
                                 color: AppColors.primaryColor,
                               ))
