@@ -1,6 +1,5 @@
 # 🛍️ Souqly  
 
-![Souqly Banner](assets/screenshots/bannerjpg.png)  
 *A modern e-commerce app built with Flutter, featuring authentication, cart, wishlist, and real-time product updates.*  
 
 ---
