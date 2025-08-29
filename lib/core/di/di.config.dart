@@ -68,8 +68,8 @@ import '../../feature/ui/screens/home_screen/tabs/products/cart/cubit/get_cart_i
     as _i952;
 import '../../feature/ui/screens/home_screen/tabs/products/cubit/products_tab_view_model.dart'
     as _i80;
-import '../../feature/ui/screens/home_screen/tabs/wish_list/cucit/wish_list_view_model.dart'
-    as _i645;
+import '../../feature/ui/screens/home_screen/tabs/wish_list/cubit/wish_list_view_model.dart'
+    as _i368;
 import '../api/api_manager.dart' as _i1047;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -147,7 +147,7 @@ extension GetItInjectableX on _i174.GetIt {
         addToWishListRepository: gh<_i609.WishListRepository>()));
     gh.factory<_i761.LoginViewModel>(
         () => _i761.LoginViewModel(loginUseCase: gh<_i471.LoginUseCase>()));
-    gh.factory<_i645.WishListViewModel>(() => _i645.WishListViewModel(
+    gh.factory<_i368.WishListViewModel>(() => _i368.WishListViewModel(
           getWishListUseCase: gh<_i372.GetWishListUseCase>(),
           removeFromWishListUseCase: gh<_i771.RemoveFromWishListUseCase>(),
         ));
