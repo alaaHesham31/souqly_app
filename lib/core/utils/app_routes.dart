@@ -59,7 +59,7 @@ class AppRoutes {
 
       // User not logged in → force to login
       if (token == null && !isLoggingIn) {
-        return loginScreen;
+        return splashScreen;
       }
 
       // User logged in → prevent going back to login/signup
