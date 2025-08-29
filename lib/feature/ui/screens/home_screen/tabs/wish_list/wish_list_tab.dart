@@ -6,8 +6,8 @@ import 'package:e_commerce_app/core/utils/app_styles.dart';
 import 'package:e_commerce_app/domain/entities/ProductsResponseEntity.dart';
 import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/cubit/products_tab_states.dart';
 import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/cubit/products_tab_view_model.dart';
-import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/wish_list/cucit/wish_list_states.dart';
-import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/wish_list/cucit/wish_list_view_model.dart';
+import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/wish_list/cubit/wish_list_states.dart';
+import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/wish_list/cubit/wish_list_view_model.dart';
 import 'package:e_commerce_app/feature/ui/widgets/search_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -88,7 +88,7 @@ class _WishListTabState extends State<WishListTab> {
                   padding: EdgeInsets.all(12.sp),
                   child: Column(
                     children: [
-                      SearchBarWidget(controller: controller, onCartTab: () {}),
+                      SearchBarWidget(),
                       SizedBox(
                         height: 24.h,
                       ),

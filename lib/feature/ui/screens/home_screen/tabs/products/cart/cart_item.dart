@@ -10,15 +10,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CartItem extends StatelessWidget {
-  bool isInFavTab;
   final VoidCallback onDelete;
   final GetProductsInCartEntity item;
 
-  CartItem(
-      {super.key,
-      required this.item,
-      required this.onDelete,
-      this.isInFavTab = false});
+  CartItem({
+    super.key,
+    required this.item,
+    required this.onDelete,
+  });
 
   GetCartItemsViewModel viewModel = getIt<GetCartItemsViewModel>();
 
@@ -83,21 +82,12 @@ class CartItem extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      isInFavTab
-                          ? IconButton(
-                              onPressed: () {
-                              },
-                              icon:
-                              Icon(
-                                Icons.favorite_border_rounded,
-                                color: AppColors.primaryColor,
-                              ))
-                          : IconButton(
-                              onPressed: onDelete,
-                              icon: Icon(
-                                Icons.delete_rounded,
-                                color: AppColors.primaryColor,
-                              ))
+                      IconButton(
+                          onPressed: onDelete,
+                          icon: Icon(
+                            Icons.delete_rounded,
+                            color: AppColors.primaryColor,
+                          ))
                     ],
                   ),
                   Row(
@@ -110,90 +100,67 @@ class CartItem extends StatelessWidget {
                         decoration: BoxDecoration(
                             color: AppColors.primaryColor,
                             borderRadius: BorderRadius.circular(20.r)),
-                        child: isInFavTab
-                            ? ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.primaryColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12.r),
-                                  ),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 24.w, vertical: 12.h),
-                                ),
-                                onPressed: () {},
-                                child: Text(
-                                  "Add to Cart",
-                                  style: AppStyles.medium18White,
-                                ),
-                              )
-                            : Row(
-                                children: [
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.remove_circle_outline,
-                                      color: AppColors.whiteColor,
-                                      size: 24.sp,
-                                    ),
-                                    onPressed: () {
-                                      // compute new count (prevent negative)
-                                      final newCount =
-                                          (item.count!.toInt()) - 1;
-                                      if (newCount >= 1) {
-                                        context
-                                            .read<GetCartItemsViewModel>()
-                                            .updateCount(newCount,
-                                                item.product?.id ?? '');
-                                      }
-                                    },
-                                  ),
-                                  BlocBuilder<GetCartItemsViewModel,
-                                      ProductsTabStates>(
-                                    builder: (context, state) {
-                                      int displayCount = initialCount;
-
-                                      if (state is GetCartSuccessState) {
-                                        final products = state
-                                            .getCartResponseEntity
-                                            .data
-                                            ?.products;
-
-                                        if (products != null &&
-                                            products.isNotEmpty) {
-                                          final updated = products.firstWhere(
-                                            (p) =>
-                                                p.product?.id ==
-                                                item.product?.id,
-                                            orElse: () => item,
-                                          );
-                                          displayCount =
-                                              updated.count?.toInt() ??
-                                                  displayCount;
-                                        }
-                                      }
-
-                                      return Text(
-                                        displayCount.toString(),
-                                        style: AppStyles.medium18White,
-                                      );
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.add_circle_outline,
-                                      color: AppColors.whiteColor,
-                                      size: 24.sp,
-                                    ),
-                                    onPressed: () {
-                                      final newCount =
-                                          (item.count?.toInt() ?? 0) + 1;
-                                      context
-                                          .read<GetCartItemsViewModel>()
-                                          .updateCount(
-                                              newCount, item.product?.id ?? '');
-                                    },
-                                  ),
-                                ],
+                        child:
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                Icons.remove_circle_outline,
+                                color: AppColors.whiteColor,
+                                size: 24.sp,
                               ),
+                              onPressed: () {
+                                // compute new count (prevent negative)
+                                final newCount = (item.count!.toInt()) - 1;
+                                if (newCount >= 1) {
+                                  context
+                                      .read<GetCartItemsViewModel>()
+                                      .updateCount(
+                                          newCount, item.product?.id ?? '');
+                                }
+                              },
+                            ),
+                            BlocBuilder<GetCartItemsViewModel,
+                                ProductsTabStates>(
+                              builder: (context, state) {
+                                int displayCount = initialCount;
+
+                                if (state is GetCartSuccessState) {
+                                  final products = state
+                                      .getCartResponseEntity.data?.products;
+
+                                  if (products != null && products.isNotEmpty) {
+                                    final updated = products.firstWhere(
+                                      (p) => p.product?.id == item.product?.id,
+                                      orElse: () => item,
+                                    );
+                                    displayCount =
+                                        updated.count?.toInt() ?? displayCount;
+                                  }
+                                }
+
+                                return Text(
+                                  displayCount.toString(),
+                                  style: AppStyles.medium18White,
+                                );
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.add_circle_outline,
+                                color: AppColors.whiteColor,
+                                size: 24.sp,
+                              ),
+                              onPressed: () {
+                                final newCount = (item.count?.toInt() ?? 0) + 1;
+                                context
+                                    .read<GetCartItemsViewModel>()
+                                    .updateCount(
+                                        newCount, item.product?.id ?? '');
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),

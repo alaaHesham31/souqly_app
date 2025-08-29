@@ -20,7 +20,7 @@ class CategoryBrandItem extends StatelessWidget {
             height: 10.h,
             fit: BoxFit.cover,
             imageUrl: itemEntity.image ?? '',
-            placeholder: (context, url) => CircularProgressIndicator( color: AppColors.primaryColor,),
+            placeholder: (context, url) => Center(child: CircularProgressIndicator( color: AppColors.primaryColor,)),
             errorWidget: (context, url, error) => Icon(
               Icons.error,
               color: AppColors.redColor,
@@ -29,6 +29,7 @@ class CategoryBrandItem extends StatelessWidget {
               return CircleAvatar(
                 backgroundImage: ImageProvider,
                 radius: 50.r,
+
               );
             },
           ),

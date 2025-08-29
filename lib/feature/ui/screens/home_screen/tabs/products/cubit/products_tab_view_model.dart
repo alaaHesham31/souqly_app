@@ -17,7 +17,11 @@ class ProductsTabViewModel extends Cubit<ProductsTabStates> {
   AddProductToCartUseCase addProductToCartUseCase;
   GetWishListUseCase getWishListUseCase;
   List<ProductEntity> allProductsList = [];
+  List<ProductEntity> filteredProductsList = [];
+
   int numOfCartItems = 0;
+  List<String> subCategoriesList = [];
+  int selectedIndex = 0;
 
   TextEditingController controller = TextEditingController();
 
@@ -30,10 +34,29 @@ class ProductsTabViewModel extends Cubit<ProductsTabStates> {
       emit(ProductsErrorState(error: error));
     }, (response) {
       allProductsList = response.data!;
+      filteredProductsList = List.from(allProductsList);
 
-      emit(ProductsSuccessState(productsResponse: response));
+      emit(ProductsSuccessState(products: allProductsList));
     });
   }
+
+  // get filtered products -- each for subCategory name
+  void filterProductsBySubCategory(String? subCategory, int index) {
+    selectedIndex = index;
+
+    if (subCategory == null || subCategory.isEmpty) {
+      filteredProductsList = List.from(allProductsList);
+    } else {
+      filteredProductsList = allProductsList.where((product) {
+        return product.subcategory?.any((s) => s.name == subCategory) ?? false;
+      }).toList();
+    }
+
+    emit(ProductsSuccessState(products: filteredProductsList));
+  }
+
+
+
 
   addProductsToCart({required String productId}) async {
     var either = await addProductToCartUseCase.invoke(productId);

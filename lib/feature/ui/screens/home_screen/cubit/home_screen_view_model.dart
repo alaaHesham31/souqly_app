@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 class HomeScreenViewModel extends Cubit<HomeScreenStates>{
   HomeScreenViewModel(): super(HomeScreenInitState());
-  int selectedIndex = 1;
+  int selectedIndex = 0;
   List<Widget> tabs = [
     HomeTab(),
     ProductsTab(),

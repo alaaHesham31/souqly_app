@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomTextField extends StatelessWidget {
   TextEditingController controller;
-  String hintText;
+  String? hintText;
   final String? Function(String?)? validator;
   bool? obscureText;
   Widget? suffixIcon;
@@ -17,7 +17,7 @@ class CustomTextField extends StatelessWidget {
   CustomTextField(
       {super.key,
       required this.controller,
-      required this.hintText,
+       this.hintText,
       this.validator,
       this.obscureText,
       this.suffixIcon,

@@ -1,4 +1,5 @@
 import 'package:e_commerce_app/core/shared_prefrences/shared_preferences_utils.dart';
+import 'package:e_commerce_app/domain/entities/GetCartResponseEntity.dart';
 import 'package:e_commerce_app/domain/entities/ProductsResponseEntity.dart';
 import 'package:e_commerce_app/feature/ui/auth/login/login_screen.dart';
 import 'package:e_commerce_app/feature/ui/auth/register/register_screen.dart';
@@ -16,38 +17,40 @@ class AppRoutes {
   static const String productDetailsScreen = "/detailsScreen";
   static const String cartDetailsScreen = "/cartDetailsScreen";
 
-
   static GoRouter router = GoRouter(
-      initialLocation: splashScreen,
-      routes: [
-        GoRoute(
-          path: splashScreen,
-          builder: (context, state) => SplashScreen(),
-        ),
-        GoRoute(
-          path: loginScreen,
-          builder: (context, state) => LoginScreen(),
-        ),
-        GoRoute(
-          path: signUpScreen,
-          builder: (context, state) => RegisterScreen(),
-        ),
-        GoRoute(
-          path: homeScreen,
-          builder: (context, state) => HomeScreen(),
-        ),
-        GoRoute(
-          path: productDetailsScreen,
-          builder: (context, state) {
-            final product = state.extra as ProductEntity;
-            return ProductDetailsScreen(product: product);
-          },
-        ),
-        GoRoute(
-          path: cartDetailsScreen,
-          builder: (context, state) => CartDetailsScreen(),
-        ),
-      ],
+    initialLocation: splashScreen,
+    routes: [
+      GoRoute(
+        path: splashScreen,
+        builder: (context, state) => SplashScreen(),
+      ),
+      GoRoute(
+        path: loginScreen,
+        builder: (context, state) => LoginScreen(),
+      ),
+      GoRoute(
+        path: signUpScreen,
+        builder: (context, state) => RegisterScreen(),
+      ),
+      GoRoute(
+        path: homeScreen,
+        builder: (context, state) => HomeScreen(),
+      ),
+      GoRoute(
+        path: productDetailsScreen,
+        builder: (context, state) {
+          final product = state.extra as ProductEntity;
+
+          return ProductDetailsScreen(
+            product: product,
+          );
+        },
+      ),
+      GoRoute(
+        path: cartDetailsScreen,
+        builder: (context, state) => CartDetailsScreen(),
+      ),
+    ],
     redirect: (context, state) {
       final token = SharedPreferencesUtils.getString('token');
 

@@ -25,6 +25,10 @@ class AppStyles {
       fontSize: 18.sp,
       fontWeight: FontWeight.w400,
       color: AppColors.whiteColor);
+  static TextStyle bold14White = GoogleFonts.poppins(
+      fontSize: 14.sp,
+      fontWeight: FontWeight.w600,
+      color: AppColors.whiteColor);
 
   // texts with grey color
   static TextStyle light18Grey = GoogleFonts.poppins(
@@ -55,6 +59,10 @@ class AppStyles {
   static TextStyle regular14Primary = GoogleFonts.poppins(
       fontSize: 14.sp,
       fontWeight: FontWeight.w400,
+      color: AppColors.primaryColor);
+  static TextStyle bold14Primary = GoogleFonts.poppins(
+      fontSize: 14.sp,
+      fontWeight: FontWeight.w600,
       color: AppColors.primaryColor);
 
   // texts with black color

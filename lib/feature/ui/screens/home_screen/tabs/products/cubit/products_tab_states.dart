@@ -18,10 +18,11 @@ class ProductsErrorState extends ProductsTabStates {
 }
 
 class ProductsSuccessState extends ProductsTabStates {
-  ProductsResponseEntity productsResponse;
+  final List<ProductEntity> products;
 
-  ProductsSuccessState({required this.productsResponse});
+  ProductsSuccessState({required this.products});
 }
+
 
 class AddToCartLoadingState extends ProductsTabStates {}
 

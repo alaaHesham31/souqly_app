@@ -17,111 +17,122 @@ class ProfileTab extends StatelessWidget {
     context.go(AppRoutes.loginScreen);
   }
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
+  TextEditingController nameController =
+      TextEditingController(text: 'Alaa Hesham');
+  TextEditingController emailController =
+      TextEditingController(text: 'alaa@gmail.com');
+  TextEditingController phoneController =
+      TextEditingController(text: '01094568875');
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Image(
-          image: AssetImage(AppAssets.appLogo),
-          color: AppColors.primaryColor,
-          width: 200.w,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Image(
+            image: AssetImage(AppAssets.appLogo),
+            color: AppColors.primaryColor,
+            width: 200.w,
+          ),
         ),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(12.sp),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        body: Padding(
+          padding: EdgeInsets.all(12.sp),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Column(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Welcome, Mohamed',
-                      style: AppStyles.semiBold20Primary,
+                    Column(
+                      children: [
+                        Text(
+                          'Welcome, Alaa',
+                          style: AppStyles.semiBold20Primary,
+                        ),
+                        Text(
+                          'alaa.@gmail.com',
+                          style: AppStyles.medium16Grey,
+                        ),
+                      ],
                     ),
-                    Text(
-                      'mohamed.N@gmail.com',
-                      style: AppStyles.medium16Grey,
+                    Container(
+                      decoration: BoxDecoration(
+                          color: AppColors.whiteColor,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.greyColor.withValues(alpha: 0.5),
+                              blurRadius: 2,
+                              offset: Offset(0, 2),
+                            )
+                          ]),
+                      child: IconButton(
+                        onPressed: () async {
+                          await logout(context);
+                        },
+                        icon: const Icon(Icons.logout,
+                            color: AppColors.primaryColor),
+                      ),
                     ),
                   ],
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                      color: AppColors.whiteColor,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.greyColor.withValues(alpha: 0.5),
-                          blurRadius: 2,
-                          offset: Offset(0, 2),
-                        )
-                      ]),
-                  child: IconButton(
-                    onPressed: () async {
-                      await logout(context);
-                    },
-                    icon:
-                        const Icon(Icons.logout, color: AppColors.primaryColor),
-                  ),
+                SizedBox(
+                  height: 40.h,
+                ),
+                Text(
+                  'Your full name',
+                  style: AppStyles.medium18Primary,
+                ),
+                SizedBox(
+                  height: 16.h,
+                ),
+
+                // TODO: Implement update profile feature once API is available.
+                // These fields (name, email, phone) should be editable and updates
+                // must be persisted via the backend API.
+
+                CustomTextField(
+                  controller: nameController,
+                  suffixIcon: Icon(Icons.edit),
+                  borderColor: AppColors.primaryColor,
+                ),
+                SizedBox(
+                  height: 24.h,
+                ),
+                Text(
+                  'Your E-mail',
+                  style: AppStyles.medium18Primary,
+                ),
+                SizedBox(
+                  height: 16.h,
+                ),
+                CustomTextField(
+                  controller: emailController,
+                  suffixIcon: Icon(Icons.edit),
+                  borderColor: AppColors.primaryColor,
+                ),
+                SizedBox(
+                  height: 24.h,
+                ),
+                Text(
+                  'Your mobile number',
+                  style: AppStyles.medium18Primary,
+                ),
+                SizedBox(
+                  height: 16.h,
+                ),
+                CustomTextField(
+                  controller: phoneController,
+                  suffixIcon: Icon(Icons.edit),
+                  borderColor: AppColors.primaryColor,
                 ),
               ],
             ),
-            SizedBox(
-              height: 40.h,
-            ),
-            Text(
-              'Your full name',
-              style: AppStyles.medium18Primary,
-            ),
-            SizedBox(
-              height: 16.h,
-            ),
-            CustomTextField(
-              controller: nameController,
-              hintText: 'Alaa',
-              suffixIcon: Icon(Icons.edit),
-              borderColor: AppColors.primaryColor,
-            ),
-            SizedBox(
-              height: 24.h,
-            ),
-            Text(
-              'Your E-mail',
-              style: AppStyles.medium18Primary,
-            ),
-            SizedBox(
-              height: 16.h,
-            ),
-            CustomTextField(
-              controller: emailController,
-
-              hintText: 'alaa',
-              suffixIcon: Icon(Icons.edit),
-              borderColor: AppColors.primaryColor,
-            ),
-            SizedBox(
-              height: 24.h,
-            ),
-            Text(
-              'Your mobile number',
-              style: AppStyles.medium18Primary,
-            ),
-            SizedBox(
-              height: 16.h,
-            ),
-            CustomTextField(
-              controller: phoneController,
-              hintText: '01000',
-              suffixIcon: Icon(Icons.edit),
-              borderColor: AppColors.primaryColor,
-            ),
-          ],
+          ),
         ),
       ),
     );

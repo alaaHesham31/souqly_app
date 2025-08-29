@@ -1,23 +1,28 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce_app/core/utils/app_colors.dart';
+import 'package:e_commerce_app/core/utils/app_routes.dart';
 import 'package:e_commerce_app/core/utils/app_styles.dart';
 import 'package:e_commerce_app/domain/entities/ProductsResponseEntity.dart';
+import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/cart/cubit/get_cart_items_view_model.dart';
+import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/cubit/products_tab_states.dart';
+import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/cubit/products_tab_view_model.dart';
+import 'package:e_commerce_app/feature/ui/widgets/cart_icon_widgte.dart';
 import 'package:e_commerce_app/feature/ui/widgets/custom_elevated_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:readmore/readmore.dart';
+import 'package:badges/badges.dart' as badges;
+
 
 class ProductDetailsScreen extends StatelessWidget {
   ProductEntity product;
+
   ProductDetailsScreen({required this.product});
 
-  List<String> images = [
-    "https://media.wired.com/photos/63728604691ed08cc4b98976/3:2/w_2560%2Cc_limit/Nike-Swoosh-News-Gear.jpg",
-    "https://media.wired.com/photos/63728604691ed08cc4b98976/3:2/w_2560%2Cc_limit/Nike-Swoosh-News-Gear.jpg",
-    "https://media.wired.com/photos/63728604691ed08cc4b98976/3:2/w_2560%2Cc_limit/Nike-Swoosh-News-Gear.jpg",
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -29,38 +34,48 @@ class ProductDetailsScreen extends StatelessWidget {
         ),
         centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.search_rounded,
-              color: AppColors.primaryColor,
-            ),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.shopping_cart_outlined,
-              color: AppColors.primaryColor,
-            ),
-          ),
-        ],
+          Padding(
+            padding: EdgeInsets.only(right: 12.w),
+            child: const CartIconWithBadge(),
+          ),        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding:  EdgeInsets.all(18.h),
+          padding: EdgeInsets.all(18.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Stack(
                 children: [
                   SizedBox(
-                      height: 400.h, child: _buildImageSlideShow(images: product.images ?? [])),
+                      height: 400.h,
+                      child:
+                          _buildImageSlideShow(images: product.images ?? [])),
                   Positioned(
                     top: 8.h,
                     right: 8.w,
-                    child: Icon(
-                      Icons.favorite_border_rounded,
-                      color: AppColors.primaryColor,
+                    child: IconButton(
+                      onPressed: () {
+                        GetCartItemsViewModel.get(context)
+                            .addToWishList(product.id ?? '');
+                      },
+                      icon:
+                          BlocBuilder<GetCartItemsViewModel, ProductsTabStates>(
+                        builder: (context, state) {
+                          final viewModel = GetCartItemsViewModel.get(context);
+
+                          // check if current product is in wishlist
+                          final isInWishList =
+                              viewModel.wishListIds.contains(product.id);
+
+                          return Icon(
+                            isInWishList
+                                ? Icons.favorite_rounded
+                                : Icons.favorite_border_rounded,
+                            color: AppColors.primaryColor,
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ],
@@ -79,7 +94,6 @@ class ProductDetailsScreen extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-
                   Text(
                     " EGP ${product.price.toString()}",
                     style: AppStyles.semiBold20Primary,
@@ -99,7 +113,7 @@ class ProductDetailsScreen extends StatelessWidget {
                             Border.all(color: AppColors.greyColor, width: 1.w),
                         borderRadius: BorderRadius.circular(20.r)),
                     child: Text(
-                      '${product.quantity } Sold',
+                      '${product.quantity} Sold',
                       style: AppStyles.medium18Black,
                     ),
                   ),
@@ -117,39 +131,7 @@ class ProductDetailsScreen extends StatelessWidget {
                     '${product.ratingsAverage} (${product.ratingsQuantity}) ',
                     style: AppStyles.regular14Primary,
                   ),
-                  Spacer(),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h),
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryColor,
-                      borderRadius: BorderRadius.circular(20.r),
-                    ),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.add_circle,
-                            color: AppColors.whiteColor,
-                          ),
-                        ),
-                        AutoSizeText(
-                          '1',
-                          style: AppStyles.regular18White,
-                          minFontSize: 18,
-                          maxLines: 4,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.remove_circle,
-                            color: AppColors.whiteColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
+
                 ],
               ),
               SizedBox(
@@ -163,7 +145,7 @@ class ProductDetailsScreen extends StatelessWidget {
                 height: 8.h,
               ),
               ReadMoreText(
-                product.description?? "",
+                product.description ?? "",
                 trimLength: 2,
                 trimMode: TrimMode.Line,
                 colorClickableText: AppColors.greyColor,
@@ -189,19 +171,47 @@ class ProductDetailsScreen extends StatelessWidget {
                         'EGP 3,500',
                         style: AppStyles.medium18Black,
                       ),
-
                     ],
                   ),
                   Spacer(),
                   Expanded(
-                    child: CustomElevatedButton(
-                        text: 'Add to cart',
-                        textStyle: AppStyles.medium18White,
-                        prefixImage: Icon(
-                          Icons.add_shopping_cart,
-                          color: AppColors.whiteColor,
-                        ),
-                        onPressed: () {}),
+                    child:
+                        BlocListener<ProductsTabViewModel, ProductsTabStates>(
+                      listenWhen: (prev, curr) =>
+                          curr is AddToCartSuccessState ||
+                          curr is AddToCartErrorState,
+                      listener: (context, state) {
+                        if (state is AddToCartSuccessState) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  state.addToCartResponseEntity.message ??
+                                      "Added to cart"),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        } else if (state is AddToCartErrorState) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(state.error.errorMessage),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      },
+                      child: CustomElevatedButton(
+                          text: 'Add to cart',
+                          textStyle: AppStyles.medium18White,
+                          prefixImage: Icon(
+                            Icons.add_shopping_cart,
+                            color: AppColors.whiteColor,
+                          ),
+                          onPressed: () {
+                            context
+                                .read<ProductsTabViewModel>()
+                                .addProductsToCart(productId: product.id ?? '');
+                          }),
+                    ),
                   ),
                 ],
               ),

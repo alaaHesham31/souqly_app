@@ -50,8 +50,7 @@ class _HomeTabState extends State<HomeTab> {
             child: Column(
               children: [
                 SearchBarWidget(
-                  controller: viewModel.controller,
-                  onCartTab: () {},
+
                 ),
                 SizedBox(
                   height: 16.h,

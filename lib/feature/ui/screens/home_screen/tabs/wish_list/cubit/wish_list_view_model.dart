@@ -1,7 +1,7 @@
 import 'package:e_commerce_app/domain/entities/ProductsResponseEntity.dart';
 import 'package:e_commerce_app/domain/use_cases/get_wish_list_use_case.dart';
 import 'package:e_commerce_app/domain/use_cases/remove_from_wish_list_use_case.dart';
-import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/wish_list/cucit/wish_list_states.dart';
+import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/wish_list/cubit/wish_list_states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 

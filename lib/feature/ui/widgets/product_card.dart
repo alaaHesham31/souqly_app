@@ -37,8 +37,10 @@ class ProductCard extends StatelessWidget {
                     // height: 191.h,
                     fit: BoxFit.cover,
                     imageUrl: product.imageCover ?? "",
-                    placeholder: (context, url) => CircularProgressIndicator(
-                      color: AppColors.primaryColor,
+                    placeholder: (context, url) => Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.primaryColor,
+                      ),
                     ),
                     errorWidget: (context, url, error) => Icon(
                       Icons.error,
