@@ -70,8 +70,6 @@ class GetCartItemsViewModel extends Cubit<ProductsTabStates> {
       emit(AddToWishListErrorState(error: error));
     }, (response) {
     wishListIds.add(productId);
-    // print(productId);
-    //   print("====================== product added successfully with id: $productId");
       emit(AddToWishListSuccessState(addToWishListResponseEntity: response));
     });
   }

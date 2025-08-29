@@ -2,9 +2,11 @@ import 'package:e_commerce_app/core/di/di.dart';
 import 'package:e_commerce_app/core/utils/app_assets.dart';
 import 'package:e_commerce_app/core/utils/app_colors.dart';
 import 'package:e_commerce_app/core/utils/app_routes.dart';
+import 'package:e_commerce_app/core/utils/app_styles.dart';
 import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/cubit/products_tab_states.dart';
 import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/cubit/products_tab_view_model.dart';
-import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/wish_list/cucit/wish_list_view_model.dart';
+import 'package:e_commerce_app/feature/ui/widgets/filter_tabs_widget.dart';
+import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/wish_list/cubit/wish_list_view_model.dart';
 import 'package:e_commerce_app/feature/ui/widgets/product_card.dart';
 import 'package:e_commerce_app/feature/ui/widgets/search_bar_widget.dart';
 import 'package:flutter/material.dart';
@@ -83,7 +85,7 @@ class _ProductsTabState extends State<ProductsTab>
 
           builder: (context, state) {
             if (state is ProductsLoadingState &&
-                viewModel.allProductsList.isEmpty) {
+                viewModel.filteredProductsList.isEmpty) {
               return Center(
                 child: CircularProgressIndicator(color: AppColors.primaryColor),
               );
@@ -91,18 +93,47 @@ class _ProductsTabState extends State<ProductsTab>
             if (state is ProductsErrorState) {
               return Center(child: Text(state.error.errorMessage));
             }
+            final subCategoriesList = viewModel.allProductsList
+                .expand(
+                    (product) => product.subcategory!.map((sub) => sub.name))
+                .toSet()
+                .toList();
             return Padding(
               padding: EdgeInsets.all(8.h),
               child: Column(
                 children: [
-                  SearchBarWidget(
-                      controller: viewModel.controller, onCartTab: () {}),
+                  SearchBarWidget(),
                   SizedBox(
                     height: 24.h,
                   ),
+                  SizedBox(
+                    height: 60.h,
+                    child: ListView.builder(
+                      padding: EdgeInsets.only(bottom: 16),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: subCategoriesList.length,
+                      itemBuilder: (context, index) {
+                        final subCategory = subCategoriesList[index];
+                        return GestureDetector(
+                          onTap: () {
+                            viewModel.filterProductsBySubCategory(
+                                subCategory, index);
+                          },
+                          child: FilterTabsWidget(
+                            backgroundSelectedColor: AppColors.primaryColor,
+                            borderUnSelectedColor: AppColors.primaryColor,
+                            selectedTextStyle: AppStyles.bold14White,
+                            unSelectedTextStyle: AppStyles.bold14Primary,
+                            isSelected: viewModel.selectedIndex == index,
+                            subCategoryName: subCategory ?? '',
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                   Expanded(
                     child: GridView.builder(
-                        itemCount: viewModel.allProductsList.length,
+                        itemCount: viewModel.filteredProductsList.length,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
                             childAspectRatio: 2 / 3.2.h,
@@ -112,10 +143,11 @@ class _ProductsTabState extends State<ProductsTab>
                           return InkWell(
                               onTap: () {
                                 context.push(AppRoutes.productDetailsScreen,
-                                    extra: viewModel.allProductsList[index]);
+                                    extra:
+                                        viewModel.filteredProductsList[index]);
                               },
                               child: ProductCard(
-                                product: viewModel.allProductsList[index],
+                                product: viewModel.filteredProductsList[index],
                               ));
                         }),
                   ),
