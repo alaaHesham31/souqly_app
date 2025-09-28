@@ -1,5 +1,3 @@
-import 'package:e_commerce_app/core/shared_prefrences/shared_preferences_utils.dart';
-import 'package:e_commerce_app/domain/entities/GetCartResponseEntity.dart';
 import 'package:e_commerce_app/domain/entities/ProductsResponseEntity.dart';
 import 'package:e_commerce_app/feature/ui/auth/login/login_screen.dart';
 import 'package:e_commerce_app/feature/ui/auth/register/register_screen.dart';
@@ -8,6 +6,8 @@ import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/prod
 import 'package:e_commerce_app/feature/ui/screens/splash_screen/splash_screen.dart';
 import 'package:e_commerce_app/feature/ui/screens/home_screen/home_screen.dart';
 import 'package:go_router/go_router.dart';
+
+import '../secure_storage/secure_storage_utils.dart';
 
 class AppRoutes {
   static const String splashScreen = "/init";
@@ -51,13 +51,13 @@ class AppRoutes {
         builder: (context, state) => CartDetailsScreen(),
       ),
     ],
-    redirect: (context, state) {
-      final token = SharedPreferencesUtils.getString('token');
+    redirect: (context, state) async {
+      final token = await SecureStorageUtils.read('token');
 
       final isLoggingIn = state.matchedLocation == loginScreen ||
           state.matchedLocation == signUpScreen;
 
-      // User not logged in → force to login
+      // User not logged in → force to splash (or login)
       if (token == null && !isLoggingIn) {
         return splashScreen;
       }

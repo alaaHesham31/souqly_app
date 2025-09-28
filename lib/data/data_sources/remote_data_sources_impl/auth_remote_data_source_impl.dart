@@ -2,12 +2,13 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dartz/dartz.dart';
 import 'package:e_commerce_app/core/api/api_manager.dart';
 import 'package:e_commerce_app/core/api/end_points.dart';
-import 'package:e_commerce_app/core/shared_prefrences/shared_preferences_utils.dart';
 import 'package:e_commerce_app/core/utils/failures.dart';
 import 'package:e_commerce_app/data/model/LoginResponseDm.dart';
 import 'package:e_commerce_app/data/model/RgisterResponseDm.dart';
 import 'package:e_commerce_app/domain/repositories/data_sources/remote_data_sources/auth_remote_data_source.dart';
 import 'package:injectable/injectable.dart';
+
+import '../../../core/secure_storage/secure_storage_utils.dart';
 
 @Injectable(as: AuthRemoteDataSource)
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -71,8 +72,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         var loginResponse = LoginResponseDm.fromJson(response.data);
 
         if (response.statusCode! >= 200 && response.statusCode! < 300) {
-          SharedPreferencesUtils.saveData(key: 'token', value: loginResponse.token);
+          if (loginResponse.token != null && loginResponse.token!.isNotEmpty) {
+            await SecureStorageUtils.write('token', loginResponse.token!);
+          }
           return Right(loginResponse);
+
         } else {
           return Left(ServerError(
               errorMessage: loginResponse.message ?? 'Unknown Error'));

@@ -1,4 +1,4 @@
-import 'package:e_commerce_app/core/shared_prefrences/shared_preferences_utils.dart';
+import 'package:e_commerce_app/core/secure_storage/secure_storage_utils.dart';
 import 'package:e_commerce_app/core/utils/app_assets.dart';
 import 'package:e_commerce_app/core/utils/app_colors.dart';
 import 'package:e_commerce_app/core/utils/app_routes.dart';
@@ -25,11 +25,13 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _checkLogin() async {
-    final token = SharedPreferencesUtils.getString('token') ;
+    final token = await SecureStorageUtils.read('token');
 
     if (token != null && token.isNotEmpty) {
+      if (!mounted) return;
       context.go(AppRoutes.homeScreen);
     } else {
+      if (!mounted) return;
       context.go(AppRoutes.loginScreen);
     }
   }
@@ -43,7 +45,6 @@ class _SplashScreenState extends State<SplashScreen> {
         color: AppColors.primaryColor,
         child: Stack(
           children: [
-            // Top white radial gradient
             Align(
               alignment: Alignment.topCenter,
               child: Container(
@@ -62,8 +63,6 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ),
             ),
-
-            // Bottom white radial gradient
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
@@ -82,8 +81,6 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ),
             ),
-
-            // Logo in center
             Center(child: Image(image: AssetImage(AppAssets.appLogo))),
           ],
         ),

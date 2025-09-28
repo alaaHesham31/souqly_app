@@ -1,4 +1,4 @@
-import 'package:e_commerce_app/core/shared_prefrences/shared_preferences_utils.dart';
+import 'package:e_commerce_app/core/secure_storage/secure_storage_utils.dart';
 import 'package:e_commerce_app/core/utils/app_assets.dart';
 import 'package:e_commerce_app/core/utils/app_colors.dart';
 import 'package:e_commerce_app/core/utils/app_routes.dart';
@@ -12,17 +12,17 @@ class ProfileTab extends StatelessWidget {
   ProfileTab({super.key});
 
   Future<void> logout(BuildContext context) async {
-    await SharedPreferencesUtils.removeData(key: 'token');
+    await SecureStorageUtils.delete('token');
     if (!context.mounted) return;
     context.go(AppRoutes.loginScreen);
   }
 
-  TextEditingController nameController =
-      TextEditingController(text: 'Alaa Hesham');
-  TextEditingController emailController =
-      TextEditingController(text: 'alaa@gmail.com');
-  TextEditingController phoneController =
-      TextEditingController(text: '01094568875');
+  final TextEditingController nameController =
+  TextEditingController(text: 'Alaa ');
+  final TextEditingController emailController =
+  TextEditingController(text: 'alaa.ahmk@gmail.com');
+  final TextEditingController phoneController =
+  TextEditingController(text: '01094568875');
 
   @override
   Widget build(BuildContext context) {
@@ -54,22 +54,23 @@ class ProfileTab extends StatelessWidget {
                           style: AppStyles.semiBold20Primary,
                         ),
                         Text(
-                          'alaa.@gmail.com',
+                          'alaa.ahmk@gmail.com',
                           style: AppStyles.medium16Grey,
                         ),
                       ],
                     ),
                     Container(
                       decoration: BoxDecoration(
-                          color: AppColors.whiteColor,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.greyColor.withValues(alpha: 0.5),
-                              blurRadius: 2,
-                              offset: Offset(0, 2),
-                            )
-                          ]),
+                        color: AppColors.whiteColor,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.greyColor.withValues(alpha: 0.5),
+                            blurRadius: 2,
+                            offset: const Offset(0, 2),
+                          )
+                        ],
+                      ),
                       child: IconButton(
                         onPressed: () async {
                           await logout(context);
@@ -80,54 +81,28 @@ class ProfileTab extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 40.h,
-                ),
-                Text(
-                  'Your full name',
-                  style: AppStyles.medium18Primary,
-                ),
-                SizedBox(
-                  height: 16.h,
-                ),
-
-                // TODO: Implement update profile feature once API is available.
-                // These fields (name, email, phone) should be editable and updates
-                // must be persisted via the backend API.
-
+                SizedBox(height: 40.h),
+                Text('Your full name', style: AppStyles.medium18Primary),
+                SizedBox(height: 16.h),
                 CustomTextField(
                   controller: nameController,
-                  suffixIcon: Icon(Icons.edit),
+                  suffixIcon: const Icon(Icons.edit),
                   borderColor: AppColors.primaryColor,
                 ),
-                SizedBox(
-                  height: 24.h,
-                ),
-                Text(
-                  'Your E-mail',
-                  style: AppStyles.medium18Primary,
-                ),
-                SizedBox(
-                  height: 16.h,
-                ),
+                SizedBox(height: 24.h),
+                Text('Your E-mail', style: AppStyles.medium18Primary),
+                SizedBox(height: 16.h),
                 CustomTextField(
                   controller: emailController,
-                  suffixIcon: Icon(Icons.edit),
+                  suffixIcon: const Icon(Icons.edit),
                   borderColor: AppColors.primaryColor,
                 ),
-                SizedBox(
-                  height: 24.h,
-                ),
-                Text(
-                  'Your mobile number',
-                  style: AppStyles.medium18Primary,
-                ),
-                SizedBox(
-                  height: 16.h,
-                ),
+                SizedBox(height: 24.h),
+                Text('Your mobile number', style: AppStyles.medium18Primary),
+                SizedBox(height: 16.h),
                 CustomTextField(
                   controller: phoneController,
-                  suffixIcon: Icon(Icons.edit),
+                  suffixIcon: const Icon(Icons.edit),
                   borderColor: AppColors.primaryColor,
                 ),
               ],
