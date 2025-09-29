@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:e_commerce_app/core/di/di.dart';
 import 'package:e_commerce_app/core/utils/app_assets.dart';
 import 'package:e_commerce_app/core/utils/app_colors.dart';
@@ -8,6 +9,9 @@ import 'package:e_commerce_app/feature/ui/screens/home_screen/tabs/products/cubi
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../../../../../data/payment/payment_service.dart';
+import '../../../../../payment/payment_webview.dart';
 
 class CartDetailsScreen extends StatefulWidget {
   const CartDetailsScreen({super.key});
@@ -150,7 +154,10 @@ class _CartDetailsScreenState extends State<CartDetailsScreen> {
                   borderRadius: BorderRadius.circular(12.r)),
               padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
             ),
-            onPressed: () {},
+            onPressed: () {
+              print('is pressed');
+              _onCheckoutPressed(total);
+            },
             child: Row(
               children: [
                 Text("Check Out", style: AppStyles.medium18White),
@@ -162,5 +169,108 @@ class _CartDetailsScreenState extends State<CartDetailsScreen> {
         ],
       ),
     );
+  }
+
+  final PaymentService paymentService = PaymentService(
+    Dio(BaseOptions(baseUrl: 'http://10.0.2.2:3000')),
+  );
+
+  Future<void> _onCheckoutPressed(num total) async {
+    // billing data example
+    final billingData = {
+      "apartment": "NA",
+      "email": "test@test.com",
+      "floor": "NA",
+      "first_name": "Alaa",
+      "last_name": "Hesham",
+      "street": "Test Street",
+      "building": "123",
+      "phone_number": "01000000000",
+      "shipping_method": "NA",
+      "postal_code": "12345",
+      "city": "Cairo",
+      "country": "EG",
+      "state": "Cairo",
+    };
+
+    final merchantOrderId = DateTime.now().millisecondsSinceEpoch.toString();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      debugPrint('[checkout] calling createPayment...');
+      final result = await paymentService
+          .createPayment(
+            amount: (total as num).toDouble(),
+            merchantOrderId: merchantOrderId,
+            billingData: billingData,
+          )
+          .timeout(const Duration(seconds: 20));
+
+      debugPrint('[checkout] createPayment result: $result');
+
+      Navigator.of(context).pop(); // hide loader
+
+      final String? url = result['iframeUrl'] as String?;
+      final String? orderId = result['orderId'] as String?;
+
+      if (url == null || url.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Invalid payment URL from server')));
+        return;
+      }
+
+      final success = await Navigator.of(context).push<bool>(
+        MaterialPageRoute(
+            builder: (_) => PaymentWebviewScreen(
+                url: url, orderId: orderId ?? merchantOrderId)),
+      );
+
+      if (success == true) {
+        // verify with backend
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (_) => const Center(child: CircularProgressIndicator()));
+        final verifyResp =
+            await paymentService.verify(orderId ?? merchantOrderId);
+        Navigator.of(context).pop(); // hide loader
+
+        debugPrint('[checkout] verifyResp: $verifyResp');
+
+        final bool paid = verifyResp['tx'] != null &&
+            (verifyResp['tx']['success'] == true ||
+                (verifyResp['tx'] is Map && verifyResp['tx']['data'] != null));
+        if (paid) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('Payment succeeded'),
+              backgroundColor: Colors.green));
+          context.read<GetCartItemsViewModel>().getCartItems();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('Payment not verified'),
+              backgroundColor: Colors.red));
+        }
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Payment cancelled')));
+      }
+    } on DioException catch (e) {
+      Navigator.of(context).pop(); // hide loader
+      debugPrint('[checkout] DioException: ${e.message}');
+      debugPrint('[checkout] request uri: ${e.requestOptions.uri}');
+      debugPrint(
+          '[checkout] response: ${e.response?.statusCode} ${e.response?.data}');
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Payment error: ${e.message}')));
+    } on Exception catch (e) {
+      Navigator.of(context).pop(); // hide loader
+      debugPrint('[checkout] Exception: $e');
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Payment error: $e')));
+    }
   }
 }
