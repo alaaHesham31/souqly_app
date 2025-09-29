@@ -118,7 +118,7 @@ flutter run
 
 1. Navigate to server/ folder.
 
-2. Copy```bash .env.example    ``` → ```bash .env    ``` and add your Paymob API keys.
+2. Copy```bash .env.example``` → ```bash .env``` and add your Paymob API keys.
 
 3. Install dependencies:
    ```bash
